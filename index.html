@@ -1,0 +1,1105 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scanner Explosiones Criptos</title>
+  <style>
+    :root{
+      --bg:#020617;
+      --panel:#0f172a;
+      --accent:#22c55e;
+      --accent2:#ef4444;
+      --accent3:#eab308;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --border:#1f2937;
+      --radius:14px;
+      --shadow:0 12px 30px rgba(0,0,0,0.45);
+    }
+    *{box-sizing:border-box;}
+    html,body{
+      margin:0;
+      padding:0;
+      background:radial-gradient(circle at top,#0b1120 0,#020617 55%);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+    }
+    body{
+      display:flex;
+      justify-content:center;
+      padding:8px;
+    }
+    .app{
+      max-width:900px;
+      width:100%;
+      background:rgba(15,23,42,0.96);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(148,163,184,0.2);
+      padding:12px 10px 16px;
+    }
+    header{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      margin-bottom:8px;
+    }
+    header h1{
+      font-size:1.15rem;
+      margin:0;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    header h1 span.logo-dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:conic-gradient(from 120deg,var(--accent),var(--accent3),var(--accent2),var(--accent));
+      box-shadow:0 0 12px rgba(56,189,248,0.7);
+    }
+    header p{
+      margin:0;
+      font-size:.76rem;
+      color:var(--muted);
+    }
+    .layout{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+    @media (min-width:900px){
+      .layout{
+        grid-template-columns:260px 1fr 1fr;
+      }
+    }
+    section{
+      background:var(--panel);
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      padding:8px;
+    }
+    section h2{
+      margin:0 0 6px;
+      font-size:0.9rem;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    section h2 span.tag{
+      font-size:0.6rem;
+      padding:2px 6px;
+      border-radius:999px;
+      background:rgba(15,118,110,0.2);
+      color:#6ee7b7;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+    .config-group{
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      margin-bottom:6px;
+    }
+    .config-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:6px;
+      font-size:0.74rem;
+    }
+    .config-row label{
+      flex:1;
+      color:var(--muted);
+    }
+    .config-row span.value{
+      font-variant-numeric:tabular-nums;
+      font-size:0.78rem;
+    }
+    .range-wrap{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .range-wrap input[type="range"]{
+      flex:1;
+    }
+    .range-wrap input[type="number"]{
+      width:70px;
+      padding:3px 6px;
+      background:#020617;
+      border-radius:8px;
+      border:1px solid #1f2937;
+      color:var(--text);
+      font-size:0.74rem;
+    }
+    .select{
+      width:100%;
+      padding:4px 6px;
+      border-radius:8px;
+      border:1px solid #1f2937;
+      background:#020617;
+      color:var(--text);
+      font-size:0.78rem;
+    }
+    .small-note{
+      font-size:0.65rem;
+      color:var(--muted);
+      margin-top:1px;
+    }
+    .buttons-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:4px;
+    }
+    button{
+      border:none;
+      border-radius:999px;
+      padding:5px 10px;
+      font-size:0.74rem;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      transition:transform .06s ease,box-shadow .06s ease,background .12s ease;
+      white-space:nowrap;
+    }
+    button:active{
+      transform:scale(0.97);
+      box-shadow:none;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      color:#ecfdf5;
+      box-shadow:0 6px 15px rgba(34,197,94,0.35);
+    }
+    .btn-secondary{
+      background:rgba(15,23,42,0.95);
+      color:var(--muted);
+      border:1px solid #1f2937;
+    }
+    .btn-danger{
+      background:linear-gradient(135deg,#ef4444,#b91c1c);
+      color:#fee2e2;
+      box-shadow:0 6px 15px rgba(239,68,68,0.4);
+    }
+    .status-pill{
+      padding:2px 7px;
+      border-radius:999px;
+      font-size:.6rem;
+      background:rgba(30,64,175,0.2);
+      color:#60a5fa;
+      border:1px solid rgba(37,99,235,0.5);
+    }
+    .status-pill.active{
+      background:rgba(22,163,74,0.18);
+      color:#bbf7d0;
+      border-color:rgba(34,197,94,0.7);
+    }
+    .status-pill.stopped{
+      background:rgba(127,29,29,0.4);
+      color:#fecaca;
+      border-color:rgba(248,113,113,0.9);
+    }
+    .crypto-list-body{
+      max-height:320px;
+      overflow:auto;
+      padding-right:4px;
+      font-size:0.78rem;
+    }
+    .crypto-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:3px 0;
+      border-bottom:1px dashed rgba(15,23,42,0.6);
+    }
+    .crypto-row:last-child{
+      border-bottom:none;
+    }
+    .crypto-left{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .crypto-symbol{
+      font-weight:500;
+    }
+    .crypto-name{
+      font-size:0.65rem;
+      color:var(--muted);
+    }
+    .crypto-row input[type="checkbox"]{
+      transform:scale(1.05);
+    }
+    .alerts-body{
+      max-height:320px;
+      overflow:auto;
+      padding-right:4px;
+      font-size:0.78rem;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .alert{
+      border-radius:12px;
+      padding:6px 7px;
+      border:1px solid rgba(31,41,55,0.9);
+      background:rgba(15,23,42,0.97);
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .alert-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      font-size:0.73rem;
+    }
+    .chip{
+      padding:1px 6px;
+      border-radius:999px;
+      font-size:0.65rem;
+      border:1px solid rgba(55,65,81,0.9);
+      color:var(--muted);
+    }
+    .chip.buy{
+      border-color:rgba(34,197,94,0.9);
+      color:#bbf7d0;
+      background:rgba(22,163,74,0.15);
+    }
+    .chip.sell{
+      border-color:rgba(248,113,113,0.9);
+      color:#fecaca;
+      background:rgba(185,28,28,0.2);
+    }
+    .chip.hold{
+      border-color:rgba(234,179,8,0.9);
+      color:#fef9c3;
+      background:rgba(202,138,4,0.18);
+    }
+    .alert-main{
+      font-size:0.78rem;
+    }
+    .alert-metrics{
+      font-size:0.7rem;
+      color:var(--muted);
+    }
+    .timestamp{
+      font-size:0.64rem;
+      color:var(--muted);
+    }
+    .badge-interval{
+      font-size:0.64rem;
+      padding:1px 5px;
+      border-radius:999px;
+      background:rgba(8,47,73,0.7);
+      color:#7dd3fc;
+      border:1px solid rgba(56,189,248,0.8);
+      margin-left:4px;
+    }
+    .divider{
+      height:1px;
+      background:linear-gradient(to right,transparent,rgba(148,163,184,0.5),transparent);
+      margin:6px 0;
+    }
+    .hint{
+      font-size:.66rem;
+      color:var(--muted);
+      margin-top:3px;
+    }
+
+    /* ===== Ventana pequeña de revisión actual ===== */
+    .current-scan-panel{
+      margin-top:6px;
+    }
+    .current-scan-header{
+      font-size:0.7rem;
+      color:var(--muted);
+      margin-bottom:2px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .current-scan-body{
+      max-height:150px;
+      overflow:auto;
+      border-radius:10px;
+      background:#020617;
+      border:1px solid #1f2937;
+      padding:4px 5px;
+    }
+    .scan-row{
+      font-size:0.7rem;
+      padding:3px 0;
+      border-bottom:1px dashed #1f2937;
+    }
+    .scan-row:last-child{
+      border-bottom:none;
+    }
+    .scan-row-symbol{
+      font-weight:600;
+      margin-right:4px;
+    }
+    .scan-row-line{
+      display:flex;
+      flex-wrap:wrap;
+      gap:4px;
+    }
+    .scan-row-line span{
+      white-space:nowrap;
+    }
+    .scan-row-interval{
+      font-size:0.64rem;
+      color:#7dd3fc;
+      padding:1px 4px;
+      border-radius:999px;
+      border:1px solid rgba(56,189,248,0.6);
+      background:rgba(8,47,73,0.7);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1><span class="logo-dot"></span> Scanner Explosiones Criptos</h1>
+      <p>Vigilancia en tiempo real de las 30 criptos más populares. Datos 100% reales desde Binance.</p>
+    </header>
+
+    <div class="layout">
+      <!-- ===================== PANEL CONFIGURACIÓN ===================== -->
+      <section>
+        <h2>
+          Configuración
+          <span id="status-pill" class="status-pill stopped">Parado</span>
+        </h2>
+
+        <!-- [CONFIG] Umbral explosión % -->
+        <div class="config-group">
+          <div class="config-row">
+            <label for="umbral-slider"><strong>Umbral explosión</strong> (% distancia precio ↔ media)</label>
+            <span class="value"><span id="umbral-label">3</span> %</span>
+          </div>
+          <div class="range-wrap">
+            <input type="range" id="umbral-slider" min="1" max="15" step="0.5" value="3">
+            <input type="number" id="umbral-input" min="0.5" max="50" step="0.5" value="3">
+          </div>
+          <div class="small-note">Si el precio actual se aleja de su media más de este porcentaje (y con volumen fuerte), se considera explosión.</div>
+        </div>
+
+        <!-- [CONFIG] Intervalo de velas -->
+        <div class="config-group">
+          <div class="config-row">
+            <label for="interval-select"><strong>Intervalo a seguir</strong></label>
+            <span class="value"><span id="interval-label">1m</span></span>
+          </div>
+          <select id="interval-select" class="select">
+            <!-- ===================== [CONFIG INTERVALOS DISPONIBLES] =====================
+                 Si quieres cambiar/añadir intervalos, modifícalos también en la constante
+                 JS INTERVAL_OPTIONS (ver sección CONFIG JS).
+            -->
+            <option value="1m" selected>1 minuto (1m)</option>
+            <option value="5m">5 minutos (5m)</option>
+            <option value="15m">15 minutos (15m)</option>
+            <option value="30m">30 minutos (30m)</option>
+            <option value="1h">1 hora (1h)</option>
+            <option value="2h">2 horas (2h)</option>
+            <option value="4h">4 horas (4h)</option>
+            <option value="1d">1 día (1d)</option>
+          </select>
+          <div class="small-note">
+            Las peticiones se hacen cada 60 segundos, usando este intervalo de velas.
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="config-group">
+          <div class="config-row">
+            <label><strong>Estado de la vigilancia</strong></label>
+          </div>
+          <div class="buttons-row">
+            <button id="btn-start" class="btn-primary">▶ Iniciar vigilancia</button>
+            <button id="btn-stop" class="btn-danger">■ Detener</button>
+          </div>
+          <p class="hint">
+            La app vigila solo las criptos seleccionadas, consultando las últimas 1000 velas por símbolo e intervalo.
+          </p>
+        </div>
+
+        <!-- ========= Ventana pequeña: criptos revisadas en el último scan ========= -->
+        <div class="divider"></div>
+        <div class="current-scan-panel">
+          <div class="current-scan-header">
+            <span>Revisión actual (último escaneo)</span>
+          </div>
+          <div class="current-scan-body" id="current-scan-body">
+            <div class="hint">Aún no hay datos. Inicia la vigilancia para ver las criptos revisadas.</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===================== PANEL LISTA DE CRIPTOS ===================== -->
+      <section>
+        <h2>
+          Criptomonedas (top 30)
+          <span class="tag">Selección</span>
+        </h2>
+        <div class="buttons-row" style="margin-bottom:6px;">
+          <button id="btn-select-all" class="btn-secondary">Seleccionar todas</button>
+          <button id="btn-deselect-all" class="btn-secondary">Quitar selección</button>
+        </div>
+        <div class="crypto-list-body" id="crypto-list">
+          <!-- Se rellena con JS -->
+        </div>
+      </section>
+
+      <!-- ===================== PANEL ALERTAS ===================== -->
+      <section>
+        <h2>
+          Alertas recientes
+          <span class="tag">Explosiones</span>
+        </h2>
+        <div class="alerts-body" id="alerts">
+          <!-- Alertas generadas -->
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    // ==========================================================
+    // =============== CONFIGURACIÓN GENERAL JS =================
+    // ==========================================================
+
+    // [CONFIG INTERVALOS DISPONIBLES EN JS]
+    // Debe coincidir con las opciones del <select> en el HTML.
+    const INTERVAL_OPTIONS = ["1m","5m","15m","30m","1h","2h","4h","1d"];
+
+    // [CONFIG] Número de velas a usar para medias y rangos
+    const NUM_VELAS_MEDIA_PRECIO = 15;   // Precio medio últimas 15 velas
+    const NUM_VELAS_MEDIA_VOL = 15;      // Volumen medio últimas 15 velas
+    const NUM_VELAS_RANGO = 50;          // Rango máx/mín últimas 50 velas
+
+    // [CONFIG] Umbrales de volumen relativo y rango
+    const MIN_VOL_REL_EXPLOSION = 2.0;   // Volumen actual mínimo (veces volumen medio) para considerar explosión
+    const VOL_REL_FUERTE = 3.0;          // Volumen relativo "muy fuerte"
+
+    // [CONFIG] Tolerancia para considerar que el precio está cerca del máx/mín del rango
+    const RANGE_TOLERANCE = 0.0015;      // 0.15% respecto al rango
+
+    // [CONFIG] Intervalo del escaneo en milisegundos (1 minuto)
+    const SCAN_INTERVAL_MS = 60_000;
+
+    // [CONFIG] Límite de velas por petición (tú pediste 1000)
+    const NUM_VELAS_BINANCE = 1000;
+
+    // [CONFIG] Lista de criptomonedas (30 más conocidas, pares frente USDT en Binance)
+    const CRYPTOS = [
+      { symbol: "BTCUSDT",  label: "Bitcoin (BTC)" },
+      { symbol: "ETHUSDT",  label: "Ethereum (ETH)" },
+      { symbol: "BNBUSDT",  label: "BNB (BNB)" },
+      { symbol: "SOLUSDT",  label: "Solana (SOL)" },
+      { symbol: "XRPUSDT",  label: "XRP (XRP)" },
+      { symbol: "ADAUSDT",  label: "Cardano (ADA)" },
+      { symbol: "DOGEUSDT", label: "Dogecoin (DOGE)" },
+      { symbol: "TONUSDT",  label: "Toncoin (TON)" },
+      { symbol: "AVAXUSDT", label: "Avalanche (AVAX)" },
+      { symbol: "TRXUSDT",  label: "TRON (TRX)" },
+      { symbol: "LINKUSDT", label: "Chainlink (LINK)" },
+      { symbol: "MATICUSDT",label: "Polygon (MATIC)" },
+      { symbol: "LTCUSDT",  label: "Litecoin (LTC)" },
+      { symbol: "BCHUSDT",  label: "Bitcoin Cash (BCH)" },
+      { symbol: "DOTUSDT",  label: "Polkadot (DOT)" },
+      { symbol: "UNIUSDT",  label: "Uniswap (UNI)" },
+      { symbol: "ATOMUSDT", label: "Cosmos (ATOM)" },
+      { symbol: "XLMUSDT",  label: "Stellar (XLM)" },
+      { symbol: "OPUSDT",   label: "Optimism (OP)" },
+      { symbol: "ARBUSDT",  label: "Arbitrum (ARB)" },
+      { symbol: "INJUSDT",  label: "Injective (INJ)" },
+      { symbol: "APTUSDT",  label: "Aptos (APT)" },
+      { symbol: "SUIUSDT",  label: "Sui (SUI)" },
+      { symbol: "SEIUSDT",  label: "Sei (SEI)" },
+      { symbol: "NEARUSDT", label: "NEAR Protocol (NEAR)" },
+      { symbol: "ETCUSDT",  label: "Ethereum Classic (ETC)" },
+      { symbol: "ICPUSDT",  label: "Internet Computer (ICP)" },
+      { symbol: "FILUSDT",  label: "Filecoin (FIL)" },
+      { symbol: "HBARUSDT", label: "Hedera (HBAR)" },
+      { symbol: "EGLDUSDT", label: "MultiversX (EGLD)" }
+    ];
+
+    const BINANCE_KLINES_URL = "https://api.binance.com/api/v3/klines";
+
+    // Estado global sencillo
+    let scanIntervalId = null;
+    let lastSignalBySymbol = {}; // Para no repetir la misma alerta contínuamente
+
+    // ==========================================================
+    // ===================== INICIALIZACIÓN =====================
+    // ==========================================================
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCryptoList();
+      initControls();
+    });
+
+    function renderCryptoList(){
+      const list = document.getElementById("crypto-list");
+      list.innerHTML = "";
+      CRYPTOS.forEach(c => {
+        const row = document.createElement("div");
+        row.className = "crypto-row";
+
+        const left = document.createElement("div");
+        left.className = "crypto-left";
+
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.value = c.symbol;
+
+        const textWrap = document.createElement("div");
+        const sym = document.createElement("div");
+        sym.className = "crypto-symbol";
+        sym.textContent = c.symbol.replace("USDT","");
+
+        const nm = document.createElement("div");
+        nm.className = "crypto-name";
+        nm.textContent = c.label;
+
+        textWrap.appendChild(sym);
+        textWrap.appendChild(nm);
+
+        left.appendChild(cb);
+        left.appendChild(textWrap);
+
+        const pair = document.createElement("div");
+        pair.style.fontSize = "0.7rem";
+        pair.style.color = "#9ca3af";
+        pair.textContent = "USDT";
+
+        row.appendChild(left);
+        row.appendChild(pair);
+        list.appendChild(row);
+      });
+    }
+
+    function initControls(){
+      const umbralSlider = document.getElementById("umbral-slider");
+      const umbralInput = document.getElementById("umbral-input");
+      const umbralLabel = document.getElementById("umbral-label");
+      const intervalSelect = document.getElementById("interval-select");
+      const intervalLabel = document.getElementById("interval-label");
+      const btnStart = document.getElementById("btn-start");
+      const btnStop = document.getElementById("btn-stop");
+      const btnSelectAll = document.getElementById("btn-select-all");
+      const btnDeselectAll = document.getElementById("btn-deselect-all");
+
+      // Sincronizar slider <-> input
+      function updateUmbralFromSlider(){
+        const v = parseFloat(umbralSlider.value);
+        umbralInput.value = v;
+        umbralLabel.textContent = v.toString();
+      }
+      function updateUmbralFromInput(){
+        const v = parseFloat(umbralInput.value);
+        if(!isNaN(v)){
+          umbralSlider.value = v;
+          umbralLabel.textContent = v.toString();
+        }
+      }
+      umbralSlider.addEventListener("input", updateUmbralFromSlider);
+      umbralInput.addEventListener("change", updateUmbralFromInput);
+      updateUmbralFromSlider();
+
+      // Intervalo
+      intervalSelect.addEventListener("change", () => {
+        intervalLabel.textContent = intervalSelect.value;
+      });
+      intervalLabel.textContent = intervalSelect.value;
+
+      // Botones seleccionar/deseleccionar
+      btnSelectAll.addEventListener("click", () => {
+        document.querySelectorAll("#crypto-list input[type='checkbox']").forEach(cb => {
+          cb.checked = true;
+        });
+      });
+      btnDeselectAll.addEventListener("click", () => {
+        document.querySelectorAll("#crypto-list input[type='checkbox']").forEach(cb => {
+          cb.checked = false;
+        });
+      });
+
+      // Iniciar / detener vigilancia
+      btnStart.addEventListener("click", startScanning);
+      btnStop.addEventListener("click", stopScanning);
+    }
+
+    // ==========================================================
+    // ====================== VIGILANCIA ========================
+    // ==========================================================
+
+    function getSelectedSymbols(){
+      const cbs = document.querySelectorAll("#crypto-list input[type='checkbox']");
+      const selected = [];
+      cbs.forEach(cb => {
+        if(cb.checked) selected.push(cb.value);
+      });
+      return selected;
+    }
+
+    function startScanning(){
+      const selectedSymbols = getSelectedSymbols();
+      const interval = document.getElementById("interval-select").value;
+      const umbral = parseFloat(document.getElementById("umbral-input").value) || 3;
+
+      if(selectedSymbols.length === 0){
+        alert("Selecciona al menos una criptomoneda para vigilar.");
+        return;
+      }
+
+      if(!INTERVAL_OPTIONS.includes(interval)){
+        alert("Intervalo no válido.");
+        return;
+      }
+
+      // Guardar en estado
+      window._scanConfig = { selectedSymbols, interval, umbral };
+
+      // Si ya hay un intervalo corriendo, lo paramos
+      if(scanIntervalId !== null){
+        clearInterval(scanIntervalId);
+        scanIntervalId = null;
+      }
+
+      // Cambiar estado visual
+      updateStatusPill(true);
+
+      // Lanzar un scan inmediato y luego cada minuto
+      runScan();
+      scanIntervalId = setInterval(runScan, SCAN_INTERVAL_MS);
+    }
+
+    function stopScanning(){
+      if(scanIntervalId !== null){
+        clearInterval(scanIntervalId);
+        scanIntervalId = null;
+      }
+      updateStatusPill(false);
+    }
+
+    function updateStatusPill(active){
+      const pill = document.getElementById("status-pill");
+      if(active){
+        pill.classList.remove("stopped");
+        pill.classList.add("active");
+        pill.textContent = "Vigilando...";
+      }else{
+        pill.classList.remove("active");
+        pill.classList.add("stopped");
+        pill.textContent = "Parado";
+      }
+    }
+
+    // Reset de la ventanita de revisión actual al inicio de cada scan
+    function resetCurrentScanPanel(){
+      const body = document.getElementById("current-scan-body");
+      if(!body) return;
+      body.innerHTML = '<div class="hint">Revisión en curso... (se irán mostrando las criptos conforme se analicen)</div>';
+    }
+
+    async function runScan(){
+      const cfg = window._scanConfig;
+      if(!cfg) return;
+
+      const { selectedSymbols, interval, umbral } = cfg;
+
+      // Nuevo ciclo de revisión → reseteamos ventanita
+      resetCurrentScanPanel();
+
+      const promises = selectedSymbols.map(sym => analyzeSymbol(sym, interval, umbral));
+
+      try{
+        await Promise.all(promises);
+      }catch(e){
+        console.warn("Error en runScan:", e);
+      }
+    }
+
+    // ==========================================================
+    // ===================== FECTH & ANÁLISIS ===================
+    // ==========================================================
+
+    async function fetchKlines(symbol, interval, limit){
+      const url = `${BINANCE_KLINES_URL}?symbol=${symbol}&interval=${interval}&limit=${limit}`;
+      const res = await fetch(url);
+      if(!res.ok){
+        throw new Error(`Error al obtener klines para ${symbol} [${interval}]: ${res.status}`);
+      }
+      const data = await res.json();
+      return data;
+    }
+
+    async function analyzeSymbol(symbol, interval, umbralExplosión){
+      try{
+        const klines = await fetchKlines(symbol, interval, NUM_VELAS_BINANCE);
+        if(!Array.isArray(klines) || klines.length === 0){
+          return;
+        }
+
+        const metrics = computeMetricsFromKlines(klines);
+
+        // Actualizar ventanita de revisión actual con esta cripto
+        updateCurrentScanPanel(symbol, metrics, interval);
+
+        const signal = classifySignal(symbol, metrics, umbralExplosión, interval);
+        if(signal){
+          const key = `${symbol}|${signal.action}|${signal.direction}|${interval}|${signal.contextKey}`;
+          if(lastSignalBySymbol[symbol] !== key){
+            lastSignalBySymbol[symbol] = key;
+            addAlert(symbol, signal, interval, metrics);
+          }
+        }
+
+      }catch(err){
+        console.warn(`Error analizando ${symbol}:`, err);
+      }
+    }
+
+    function computeMetricsFromKlines(klines){
+      const len = klines.length;
+      const closes = klines.map(k => parseFloat(k[4]));
+      const volumes = klines.map(k => parseFloat(k[5]));
+      const highs = klines.map(k => parseFloat(k[2]));
+      const lows  = klines.map(k => parseFloat(k[3]));
+
+      const precioActual = closes[len - 1];
+      const volumenActual = volumes[len - 1];
+
+      function avgLast(arr, n){
+        const L = arr.length;
+        const N = Math.min(n, L);
+        let sum = 0;
+        for(let i=L-N;i<L;i++){
+          sum += arr[i];
+        }
+        return N > 0 ? sum / N : 0;
+      }
+      function maxLast(arr, n){
+        const L = arr.length;
+        const N = Math.min(n, L);
+        let m = -Infinity;
+        for(let i=L-N;i<L;i++){
+          if(arr[i] > m) m = arr[i];
+        }
+        return m;
+      }
+      function minLast(arr, n){
+        const L = arr.length;
+        const N = Math.min(n, L);
+        let m = Infinity;
+        for(let i=L-N;i<L;i++){
+          if(arr[i] < m) m = arr[i];
+        }
+        return m;
+      }
+
+      const precioMedio = avgLast(closes, NUM_VELAS_MEDIA_PRECIO);
+      const volumenMedio = avgLast(volumes, NUM_VELAS_MEDIA_VOL);
+      const maxN = maxLast(highs, NUM_VELAS_RANGO);
+      const minN = minLast(lows,  NUM_VELAS_RANGO);
+
+      const percentFromMean = precioMedio > 0
+        ? ((precioActual / precioMedio) - 1) * 100
+        : 0;
+
+      const volRel = volumenMedio > 0
+        ? (volumenActual / volumenMedio)
+        : 0;
+
+      const range = maxN - minN;
+      const posInRange = range > 0
+        ? (precioActual - minN) / range   // 0 = cerca del mínimo, 1 = cerca del máximo
+        : 0.5;
+
+      return {
+        precioActual,
+        precioMedio,
+        volumenActual,
+        volumenMedio,
+        maxN,
+        minN,
+        percentFromMean,
+        volRel,
+        posInRange,
+        range
+      };
+    }
+
+    // ==========================================================
+    // ===================== CLASIFICACIÓN ======================
+    // ==========================================================
+
+    function classifySignal(symbol, m, umbralExplosión, interval){
+      const {
+        precioActual,
+        precioMedio,
+        volumenActual,
+        volumenMedio,
+        maxN,
+        minN,
+        percentFromMean,
+        volRel,
+        posInRange
+      } = m;
+
+      const absPct = Math.abs(percentFromMean);
+
+      // 1) ¿Cumple condiciones básicas de explosión?
+      if(absPct < umbralExplosión) return null;
+      if(volRel < MIN_VOL_REL_EXPLOSION) return null;
+
+      const direction = percentFromMean >= 0 ? "up" : "down";
+      const nearMax = (precioActual >= maxN - (maxN * RANGE_TOLERANCE));
+      const nearMin = (precioActual <= minN + (minN * RANGE_TOLERANCE));
+
+      let future, action, label;
+      let contextKey = "";
+
+      if(direction === "up"){
+        // Explosión alcista
+        if(nearMax && volRel >= VOL_REL_FUERTE && posInRange > 0.65){
+          future = "continuación alcista probable";
+          action = "COMPRAR";
+          label = "Explosión alcista fuerte con volumen acompañando.";
+          contextKey = "up_strong_continue";
+        } else if(posInRange < 0.55){
+          future = "retroceso hacia la zona media probable";
+          action = "VENDER";
+          label = "Explosión alcista con pérdida de altura respecto al rango reciente.";
+          contextKey = "up_retrace";
+        } else {
+          future = "movimiento fuerte pero con equilibrio inestable";
+          action = "ESPERAR";
+          label = "Explosión alcista con volumen, pero sin señal clara de continuación o retroceso.";
+          contextKey = "up_neutral";
+        }
+      } else {
+        // Explosión bajista
+        if(nearMin && volRel >= VOL_REL_FUERTE && posInRange < 0.35){
+          future = "continuación bajista probable";
+          action = "MANTENER / EVITAR COMPRAS";
+          label = "Explosión bajista fuerte con volumen acompañando.";
+          contextKey = "down_strong_continue";
+        } else if(posInRange > 0.45){
+          future = "rebote / retroceso al alza probable";
+          action = "EVITAR VENDER EN PÁNICO";
+          label = "Explosión bajista seguida de recuperación parcial del precio.";
+          contextKey = "down_rebound";
+        } else {
+          future = "movimiento bajista fuerte pero incierto";
+          action = "ESPERAR";
+          label = "Explosión bajista con señales mixtas.";
+          contextKey = "down_neutral";
+        }
+      }
+
+      return {
+        direction,
+        action,
+        future,
+        label,
+        contextKey,
+        percentFromMean,
+        volRel,
+        precioActual,
+        precioMedio,
+        maxN,
+        minN,
+        interval
+      };
+    }
+
+    // ==========================================================
+    // =============== SIRENA DE RECHAZO (ALERTA) ===============
+    // ==========================================================
+
+    function sirenaRechazo(){
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if(!AudioCtx) return;
+
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = "sawtooth"; // sonido más crudo, tipo alarma
+      gain.gain.setValueAtTime(0.35, ctx.currentTime);
+      osc.connect(gain).connect(ctx.destination);
+
+      // Sirena 10s: sube y baja 5 veces (aprox 2s por ciclo)
+      const duracionTotal = 10;
+      const ciclos = 5;
+      const t0 = ctx.currentTime;
+
+      for(let i=0; i<ciclos; i++){
+        const inicio = t0 + i * (duracionTotal / ciclos);
+        const fin = inicio + (duracionTotal / ciclos);
+
+        // Subida de tono
+        osc.frequency.setValueAtTime(300, inicio);
+        osc.frequency.linearRampToValueAtTime(850, inicio + (duracionTotal / ciclos)/2);
+
+        // Bajada de tono
+        osc.frequency.linearRampToValueAtTime(300, fin);
+      }
+
+      osc.start(t0);
+      osc.stop(t0 + duracionTotal);
+
+      // Apagar suavemente al final
+      gain.gain.setValueAtTime(0.35, t0 + duracionTotal - 1);
+      gain.gain.linearRampToValueAtTime(0.001, t0 + duracionTotal);
+    }
+
+    // ==========================================================
+    // ======================= UI ALERTAS =======================
+    // ==========================================================
+
+    function addAlert(symbol, signal, interval, m){
+      const alerts = document.getElementById("alerts");
+      const el = document.createElement("div");
+      el.className = "alert";
+
+      const header = document.createElement("div");
+      header.className = "alert-header";
+
+      const left = document.createElement("div");
+      left.textContent = symbol.replace("USDT","");
+
+      const right = document.createElement("div");
+      const chip = document.createElement("span");
+      chip.className = "chip";
+
+      if(signal.action === "COMPRAR"){
+        chip.classList.add("buy");
+        chip.textContent = "Sugerencia: COMPRAR";
+      }else if(signal.action === "VENDER"){
+        chip.classList.add("sell");
+        chip.textContent = "Sugerencia: VENDER / TOMAR BENEFICIOS";
+      }else if(signal.action === "MANTENER / EVITAR COMPRAS"){
+        chip.classList.add("sell");
+        chip.textContent = "Sugerencia: MANTENER / EVITAR COMPRAS";
+      }else if(signal.action === "EVITAR VENDER EN PÁNICO"){
+        chip.classList.add("hold");
+        chip.textContent = "Sugerencia: EVITAR VENDER EN PÁNICO";
+      }else{
+        chip.classList.add("hold");
+        chip.textContent = "Sugerencia: ESPERAR";
+      }
+
+      const badgeInterval = document.createElement("span");
+      badgeInterval.className = "badge-interval";
+      badgeInterval.textContent = interval;
+
+      right.appendChild(chip);
+      right.appendChild(badgeInterval);
+
+      header.appendChild(left);
+      header.appendChild(right);
+
+      const main = document.createElement("div");
+      main.className = "alert-main";
+      main.textContent = `${signal.label} Probable escenario: ${signal.future}.`;
+
+      const metrics = document.createElement("div");
+      metrics.className = "alert-metrics";
+
+      const pctStr = signal.percentFromMean.toFixed(2);
+      const volStr = signal.volRel.toFixed(2);
+
+      metrics.textContent =
+        `Desviación vs media: ${pctStr}% | Volumen relativo: ${volStr}x | ` +
+        `Precio actual: ${m.precioActual.toFixed(6)} | Media: ${m.precioMedio.toFixed(6)}`;
+
+      const ts = document.createElement("div");
+      ts.className = "timestamp";
+      ts.textContent = new Date().toLocaleTimeString();
+
+      el.appendChild(header);
+      el.appendChild(main);
+      el.appendChild(metrics);
+      el.appendChild(ts);
+
+      // Añadir al principio
+      alerts.insertBefore(el, alerts.firstChild);
+
+      // Aviso sonoro en cada nueva alerta
+      sirenaRechazo();
+
+      // Opcional: limitar a X alertas visibles
+      const maxAlerts = 80;
+      while(alerts.children.length > maxAlerts){
+        alerts.removeChild(alerts.lastChild);
+      }
+    }
+
+    // ==========================================================
+    // ========== UI: VENTANA REVISIÓN ACTUAL POR CRIPTO ========
+    // ==========================================================
+
+    function updateCurrentScanPanel(symbol, m, interval){
+      const body = document.getElementById("current-scan-body");
+      if(!body) return;
+
+      // Si solo está el mensaje de hint, lo quitamos al primer dato real
+      const hint = body.querySelector(".hint");
+      if(hint) body.innerHTML = "";
+
+      const row = document.createElement("div");
+      row.className = "scan-row";
+
+      const titleLine = document.createElement("div");
+      titleLine.className = "scan-row-line";
+      const symSpan = document.createElement("span");
+      symSpan.className = "scan-row-symbol";
+      symSpan.textContent = symbol.replace("USDT","");
+
+      const intervalSpan = document.createElement("span");
+      intervalSpan.className = "scan-row-interval";
+      intervalSpan.textContent = interval;
+
+      titleLine.appendChild(symSpan);
+      titleLine.appendChild(intervalSpan);
+
+      const line1 = document.createElement("div");
+      line1.className = "scan-row-line";
+      const pctStr = m.percentFromMean.toFixed(2);
+      const pAct = m.precioActual.toFixed(6);
+      const pMed = m.precioMedio.toFixed(6);
+      line1.innerHTML =
+        `<span>P: ${pAct}</span>` +
+        `<span>Media: ${pMed}</span>` +
+        `<span>Δ%: ${pctStr}%</span>`;
+
+      const line2 = document.createElement("div");
+      line2.className = "scan-row-line";
+      const volStr = m.volumenActual.toFixed(0);
+      const volMedStr = m.volumenMedio.toFixed(0);
+      const volRelStr = m.volRel.toFixed(2);
+      line2.innerHTML =
+        `<span>Vol: ${volStr}</span>` +
+        `<span>Media vol: ${volMedStr}</span>` +
+        `<span>${volRelStr}x</span>`;
+
+      row.appendChild(titleLine);
+      row.appendChild(line1);
+      row.appendChild(line2);
+
+      body.appendChild(row);
+    }
+  </script>
+</body>
+</html>
