@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -386,7 +386,8 @@
             <input type="range" id="umbral-slider" min="1" max="15" step="0.5" value="3">
             <input type="number" id="umbral-input" min="0.5" max="50" step="0.5" value="3">
           </div>
-          <div class="small-note">Si el precio actual se aleja de su media más de este porcentaje (y con volumen fuerte), se considera explosión.</div>
+          <div class="small-note">Si el precio actual se aleja de su media más de este porcentaje (y con volumen fuerte), se 
+considera explosión.</div>
         </div>
 
         <!-- [CONFIG] Intervalo de velas -->
@@ -433,7 +434,7 @@
         <div class="divider"></div>
         <div class="current-scan-panel">
           <div class="current-scan-header">
-            <span>Revisión actual (último escaneo)</span>
+            <span id="titulo-scan">Última revisión —</span>
           </div>
           <div class="current-scan-body" id="current-scan-body">
             <div class="hint">Aún no hay datos. Inicia la vigilancia para ver las criptos revisadas.</div>
@@ -707,7 +708,19 @@
     // Reset de la ventanita de revisión actual al inicio de cada scan
     function resetCurrentScanPanel(){
       const body = document.getElementById("current-scan-body");
-      if(!body) return;
+      const titulo = document.getElementById("titulo-scan");
+      if(!body || !titulo) return;
+
+      // Crear fecha y hora actual
+      const ahora = new Date();
+      const dia = String(ahora.getDate()).padStart(2,"0");
+      const mes = String(ahora.getMonth()+1).padStart(2,"0");
+      const año = ahora.getFullYear();
+      const horas = String(ahora.getHours()).padStart(2,"0");
+      const mins  = String(ahora.getMinutes()).padStart(2,"0");
+
+      titulo.textContent = `Última revisión — ${dia}/${mes}/${año} ${horas}:${mins}`;
+
       body.innerHTML = '<div class="hint">Revisión en curso... (se irán mostrando las criptos conforme se analicen)</div>';
     }
 
