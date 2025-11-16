@@ -1037,9 +1037,13 @@ considera explosión.</div>
         `Desviación vs media: ${pctStr}% | Volumen relativo: ${volStr}x | ` +
         `Precio actual: ${m.precioActual.toFixed(6)} | Media: ${m.precioMedio.toFixed(6)}`;
 
+      // === HORA DE LA EXPLOSIÓN (SOLO hh:mm) ===
       const ts = document.createElement("div");
       ts.className = "timestamp";
-      ts.textContent = new Date().toLocaleTimeString();
+      const ahora = new Date();
+      const h  = String(ahora.getHours()).padStart(2,"0");
+      const mi = String(ahora.getMinutes()).padStart(2,"0");
+      ts.textContent = `${h}:${mi}`;
 
       el.appendChild(header);
       el.appendChild(main);
